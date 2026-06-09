@@ -1,0 +1,75 @@
+#include "student.h"
+#include <iomanip>
+
+// Default Constructor
+Student::Student() : rollNo(0), name(""), email(""), gpa(0.0) {}
+
+// Parameterized Constructor
+Student::Student(int roll, const std::string& n, const std::string& e, float g)
+    : rollNo(roll), name(n), email(e), gpa(g) {}
+
+// Getters
+int Student::getRollNo() const {
+    return rollNo;
+}
+
+std::string Student::getName() const {
+    return name;
+}
+
+std::string Student::getEmail() const {
+    return email;
+}
+
+float Student::getGPA() const {
+    return gpa;
+}
+
+// Setters
+void Student::setRollNo(int roll) {
+    rollNo = roll;
+}
+
+void Student::setName(const std::string& n) {
+    name = n;
+}
+
+void Student::setEmail(const std::string& e) {
+    email = e;
+}
+
+void Student::setGPA(float g) {
+    gpa = g;
+}
+
+// Display student information
+void Student::display() const {
+    std::cout << std::left << std::setw(10) << rollNo
+              << std::setw(20) << name
+              << std::setw(25) << email
+              << std::setw(8) << std::fixed << std::setprecision(2) << gpa << std::endl;
+}
+
+// Save student to file
+void Student::saveToFile(std::ofstream& file) const {
+    file << rollNo << "|" << name << "|" << email << "|" << gpa << "\n";
+}
+
+// Load student from file
+bool Student::loadFromFile(std::ifstream& file) {
+    std::string line;
+    if (std::getline(file, line)) {
+        size_t pos1 = line.find('|');
+        size_t pos2 = line.find('|', pos1 + 1);
+        size_t pos3 = line.find('|', pos2 + 1);
+
+        if (pos1 != std::string::npos && pos2 != std::string::npos && pos3 != std::string::npos) {
+            rollNo = std::stoi(line.substr(0, pos1));
+            name = line.substr(pos1 + 1, pos2 - pos1 - 1);
+            email = line.substr(pos2 + 1, pos3 - pos2 - 1);
+            gpa = std::stof(line.substr(pos3 + 1));
+            return true;
+        }
+    }
+    return false;
+}
